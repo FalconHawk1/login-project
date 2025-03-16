@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { Lock, Mail } from 'lucide-react';
+import { login } from "./utils/Authentication";
 
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    login(email, password)
+        .then((userData) => {
+          setLoading(false);
+          console.log("Login successful:", userData);
+          // Redirect user or update app state as needed
+        })
+        .catch((err) => {
+          setLoading(false);
+          setError(err.message);
+        });
+
     // Handle login logic here
     console.log('Login attempt:', { email, password });
   };
@@ -56,6 +73,20 @@ function App() {
             </div>
           </div>
 
+          {loading && (
+              <div className="flex justify-center items-center">
+                <svg className="animate-spin h-5 w-5 text-indigo-600 mr-2" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0116 0 8 8 0 01-16 0z"></path>
+                </svg>
+                <span className="text-indigo-600 font-medium">Iniciando sesión...</span>
+              </div>
+          )}
+
+          {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+          )}
+
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
@@ -75,6 +106,7 @@ function App() {
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors"
+            disabled={loading}
           >
             Iniciar sesión
           </button>
