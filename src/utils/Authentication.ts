@@ -7,9 +7,7 @@ export function login(email: string, password: string): Promise<{ email: string 
                 reject(new Error("La contraseña debe tener al menos 6 caracteres"));
             } else {
                 if (email === "user@example.com" && password === "password123") {
-                    const userData = { email };
-                    localStorage.setItem("user", JSON.stringify(userData));
-                    resolve(userData);
+                    resolve({ email });
                 } else {
                     reject(new Error("Correo electrónico o contraseña incorrectos"));
                 }
